@@ -20,23 +20,26 @@ app.use(morgan("combined"));
 
 // Connect to MongoDB
 async function connectToDatabase() {
-    try {
-        const client = new MongoClient(process.env.MONGODB_URI);
-        await client.connect();
-        db = client.db(process.env.DB_NAME);
-        console.log("Connected to MongoDB!");
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error);
+    if (!db) {
+        try {
+            const client = new MongoClient(process.env.MONGODB_URI);
+            await client.connect();
+            db = client.db(process.env.DB_NAME);
+            console.log("Connected to MongoDB!");
+        } catch (error) {
+            console.error("Error connecting to MongoDB:", error);
+        }
     }
 }
 
 // Root route
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
     res.send("Backend up and running.");
+    await connectToDatabase();
 });
 
-await connectToDatabase();
 app.use("/api", userManagement(db));
+await connectToDatabase();
 
 // Boot server
 app.listen(port, async () => {
