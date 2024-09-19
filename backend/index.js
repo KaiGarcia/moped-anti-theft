@@ -35,11 +35,10 @@ app.get("/", (req, res) => {
     res.send("Backend up and running.");
 });
 
+await connectToDatabase();
+app.use("/api", userManagement(db));
+
 // Boot server
 app.listen(port, async () => {
-    await connectToDatabase();
-
-    app.use("/api", userManagement(db));
-
     console.log(`Server running on http://localhost:${port}`);
 });
