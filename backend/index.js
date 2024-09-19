@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import getUsers from "./routes/userRoutes.js";
+import userManagement from "./routes/userRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -16,7 +16,7 @@ let db;
 app.use(json());
 app.use(cors());
 app.use(helmet());
-app.use(morgan('combined'));
+app.use(morgan("combined"));
 
 // Connect to MongoDB
 async function connectToDatabase() {
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 app.listen(port, async () => {
     await connectToDatabase();
 
-    app.use("/api", getUsers(db));
+    app.use("/api", userManagement(db));
 
     console.log(`Server running on http://localhost:${port}`);
 });
